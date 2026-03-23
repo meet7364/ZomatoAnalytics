@@ -1,0 +1,19 @@
+[project]
+name = "zomato-bangalore-analytics"
+version = "0.1.0"
+description = "Zomato Bangalore Restaurant Analytics — dbt + PostgreSQL pipeline with Plotly EDA"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pandas",
+    "sqlalchemy",
+    "psycopg2-binary",
+    "python-dotenv",
+    "plotly",
+    "kaleido",
+    "nbformat",
+    "ipykernel",
+    "jupyter",
+    "statsmodels",
+    "dbt-postgres>=1.10.0",
+]

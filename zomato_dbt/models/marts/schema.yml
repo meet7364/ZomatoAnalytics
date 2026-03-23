@@ -1,0 +1,85 @@
+version: 2
+
+models:
+  - name: dim_location
+    description: >
+      Location dimension — one row per unique Bangalore neighbourhood.
+      Includes restaurant count, average rating, and average cost.
+    columns:
+      - name: location_id
+        description: "Surrogate key (row number)"
+      - name: location
+        description: "Neighbourhood name"
+        tests:
+          - unique
+          - not_null
+      - name: restaurant_count
+        description: "Number of restaurants in this location"
+      - name: avg_rating
+        description: "Average rating across all restaurants"
+      - name: avg_cost
+        description: "Average cost for two people (INR)"
+
+  - name: dim_cuisine
+    description: >
+      Cuisine dimension — one row per unique cuisine.
+      Derived by exploding the comma-separated cuisines column.
+    columns:
+      - name: cuisine
+        description: "Cuisine name"
+        tests:
+          - unique
+          - not_null
+      - name: restaurant_count
+        description: "Number of restaurants serving this cuisine"
+      - name: avg_rating
+        description: "Average rating for restaurants serving this cuisine"
+
+  - name: dim_restaurant_type
+    description: >
+      Restaurant type dimension — one row per unique type
+      (Casual Dining, Quick Bites, Café, etc.).
+    columns:
+      - name: restaurant_type
+        description: "Restaurant type"
+        tests:
+          - unique
+          - not_null
+      - name: restaurant_count
+        description: "Number of restaurants of this type"
+      - name: avg_rating
+        description: "Average rating for this type"
+      - name: avg_cost
+        description: "Average cost for two"
+
+  - name: fct_restaurants
+    description: >
+      Main fact table — one row per restaurant.
+      This is the primary table Tableau connects to.
+    columns:
+      - name: name
+        description: "Restaurant name"
+        tests:
+          - not_null
+      - name: location
+        description: "Neighbourhood in Bangalore"
+        tests:
+          - not_null
+      - name: rate
+        description: "Rating (1–5 scale)"
+        tests:
+          - not_null
+      - name: votes
+        description: "Number of votes"
+      - name: approx_cost
+        description: "Cost for two (INR)"
+      - name: online_order
+        description: "Accepts online orders"
+      - name: book_table
+        description: "Table booking available"
+      - name: restaurant_type
+        description: "Restaurant type"
+      - name: listed_type
+        description: "Meal type (Dine-out, Delivery, etc.)"
+      - name: cuisines
+        description: "Comma-separated cuisines"

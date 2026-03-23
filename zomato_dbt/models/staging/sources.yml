@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: "Raw Zomato data loaded by src/load.py"
+    tables:
+      - name: zomato
+        description: "Cleaned Zomato Bangalore restaurant data"

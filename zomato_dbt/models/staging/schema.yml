@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: stg_zomato
+    description: >
+      Staging model for Zomato Bangalore restaurants.
+      Casts column types and filters out restaurants with no rating.
+      Single source of truth for all downstream mart models.
+    columns:
+      - name: name
+        description: "Restaurant name"
+        tests:
+          - not_null
+      - name: location
+        description: "Neighbourhood / area in Bangalore"
+        tests:
+          - not_null
+      - name: rate
+        description: "Rating on a 1–5 scale"
+        tests:
+          - not_null
+      - name: votes
+        description: "Number of user votes"
+      - name: approx_cost
+        description: "Approximate cost for two people (INR)"
+      - name: online_order
+        description: "Whether the restaurant accepts online orders"
+      - name: book_table
+        description: "Whether table booking is available"
+      - name: restaurant_type
+        description: "Type of restaurant (Casual Dining, Café, etc.)"
+      - name: cuisines
+        description: "Comma-separated list of cuisines served"
+      - name: listed_type
+        description: "Meal type listing (Dine-out, Delivery, etc.)"
+      - name: listed_city
+        description: "Listed area / city on Zomato"

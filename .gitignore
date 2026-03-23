@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv/
+
+# Data (Kaggle data not redistributable; processed is regenerated)
+data/raw/
+data/processed/
+
+# Credentials
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# dbt
+zomato_dbt/target/
+zomato_dbt/dbt_packages/
+zomato_dbt/logs/
+
+# OS
+.DS_Store
+
+# Do NOT ignore: plots/*.png (tracked for README & portfolio)
+zomato_dbt/profiles.yml
