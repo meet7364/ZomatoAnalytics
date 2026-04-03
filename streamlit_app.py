@@ -38,7 +38,7 @@ st.markdown(
         font-family: 'DM Sans', sans-serif !important;
         font-size: 1.75rem;
         font-weight: 700;
-        color: #C94F24;
+        color: #1E1E1C;
         line-height: 1.15;
     }
     .kpi-label {
@@ -73,7 +73,7 @@ st.markdown(
         font-family: 'DM Sans', sans-serif !important;
         font-size: 1.5rem;
         font-weight: 700;
-        color: #1E1E1C;
+        color: #E23744;
         margin-bottom: 2px;
     }
     .page-sub {
@@ -120,31 +120,39 @@ DISC_10 = [
 CHART_H = 390
 
 
+FONT = dict(family="DM Sans, sans-serif", color=C["text"], size=12)
+FONT_SM = dict(family="DM Sans, sans-serif", color=C["text"], size=11)
+FONT_AX = dict(family="DM Sans, sans-serif", color=C["text"], size=11)
+
+
 def base_layout(fig, title="", h=CHART_H):
     fig.update_layout(
         paper_bgcolor=C["bg"],
         plot_bgcolor=C["bg"],
-        font=dict(family="DM Sans, sans-serif", color=C["text"], size=12),
+        font=FONT,
         title=dict(
             text=f"<b>{title}</b>",
             font=dict(size=13, color=C["text"], family="DM Sans, sans-serif"),
             x=0,
             xref="paper",
         ),
-        margin=dict(l=10, r=10, t=44, b=10),
+        margin=dict(l=16, r=16, t=48, b=48),
         height=h,
         xaxis=dict(
             gridcolor=C["grid"],
             linecolor=C["grid"],
-            tickfont=dict(family="DM Sans, sans-serif"),
+            tickfont=dict(family="DM Sans, sans-serif", color=C["text"], size=11),
+            title_font=dict(family="DM Sans, sans-serif", color=C["text"], size=12),
         ),
         yaxis=dict(
             gridcolor=C["grid"],
             linecolor=C["grid"],
-            tickfont=dict(family="DM Sans, sans-serif"),
+            tickfont=dict(family="DM Sans, sans-serif", color=C["text"], size=11),
+            title_font=dict(family="DM Sans, sans-serif", color=C["text"], size=12),
         ),
         legend=dict(
-            bgcolor="rgba(0,0,0,0)", font=dict(family="DM Sans, sans-serif", size=11)
+            bgcolor="rgba(0,0,0,0)",
+            font=dict(family="DM Sans, sans-serif", color=C["text"], size=11),
         ),
     )
     return fig
@@ -256,7 +264,8 @@ if st.session_state.xf_rest_type:
 
 # ── Header ────────────────────────────────────────────────────────────────────
 st.markdown(
-    '<div class="page-title">🍽️ Zomato Bangalore Analytics</div>', unsafe_allow_html=True
+    '<div class="page-title">Zomato Bangalore Analytics Dashboard</div>',
+    unsafe_allow_html=True,
 )
 if active:
     pills = " ".join([f'<span class="filter-pill">{f}</span>' for f in active])
@@ -268,7 +277,7 @@ if active:
 else:
     st.markdown(
         f'<div class="page-sub">Showing {len(df):,} of {len(df_raw):,} restaurants · '
-        f"Click any chart to cross-filter</div>",
+        f"Click a bar or pie slice to<br>cross-filter all charts.",
         unsafe_allow_html=True,
     )
 
@@ -300,10 +309,10 @@ for col, (val, label) in zip(st.columns(5), kpis):
 # SECTION 1 — Location Insights
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown('<div class="sec-head">Location Insights</div>', unsafe_allow_html=True)
+top_n = st.slider("Top N locations", 5, 25, 15, key="loc_n")
 c1, c2 = st.columns(2)
 
 with c1:
-    top_n = st.slider("Top N locations", 5, 25, 15, key="loc_n")
     loc_df = (
         df_xf.groupby("location")
         .agg(count=("name", "count"), avg_rating=("rate", "mean"))
@@ -326,6 +335,7 @@ with c1:
         )
     )
     base_layout(fig1, f"Top {top_n} Locations by Restaurant Count")
+    fig1.update_layout(margin=dict(l=160, r=16, t=48, b=40))
     ev1 = st.plotly_chart(
         fig1,
         use_container_width=True,
@@ -365,6 +375,7 @@ with c2:
     fig2.update_coloraxes(showscale=False)
     fig2.update_layout(xaxis=dict(range=[3.0, 4.6]))
     base_layout(fig2, "Top Locations by Avg Rating (min 30 restaurants)")
+    fig2.update_layout(margin=dict(l=160, r=16, t=48, b=40))
     st.plotly_chart(fig2, use_container_width=True, key="ch2")
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -451,8 +462,15 @@ with c5:
         },
         hover_data={"count": True, "avg_rating": ":.2f"},
     )
-    fig5.update_layout(xaxis_tickangle=-25)
+    fig5.update_layout(
+        xaxis_tickangle=-30,
+        xaxis=dict(
+            tickfont=dict(family="DM Sans, sans-serif", color=C["text"], size=10),
+            title_font=dict(family="DM Sans, sans-serif", color=C["text"], size=12),
+        ),
+    )
     base_layout(fig5, "Online vs Offline: Avg Rating by Type")
+    fig5.update_layout(margin=dict(l=16, r=16, t=48, b=80))
     ev5 = st.plotly_chart(
         fig5,
         use_container_width=True,
@@ -526,9 +544,18 @@ with c7:
         labels={"avg_rating": "Avg Rating", "cuisines": "", "count": "# Restaurants"},
         hover_data={"count": True, "avg_rating": ":.2f"},
     )
-    fig7.update_coloraxes(colorbar=dict(title="Count", thickness=10, len=0.5))
+    fig7.update_coloraxes(
+        colorbar=dict(
+            title="Count",
+            thickness=10,
+            len=0.5,
+            title_font=dict(family="DM Sans, sans-serif", color=C["text"], size=11),
+            tickfont=dict(family="DM Sans, sans-serif", color=C["text"], size=10),
+        )
+    )
     fig7.update_layout(xaxis=dict(range=[3.4, 4.4]))
     base_layout(fig7, f"Top Cuisines by Avg Rating (min {min_cc})", h=420)
+    fig7.update_layout(margin=dict(l=160, r=16, t=48, b=48))
     st.plotly_chart(fig7, use_container_width=True, key="ch7")
 
 with c8:
