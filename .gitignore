@@ -11,7 +11,7 @@ wheels/
 
 # Data (Kaggle data not redistributable; processed is regenerated)
 data/raw/
-data/processed/
+# data/processed/
 
 # Credentials
 .env

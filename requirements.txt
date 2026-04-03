@@ -3,3 +3,6 @@ sqlalchemy
 psycopg2-binary 
 python-dotenv 
 dbt-postgres
+plotly>=5.18.0
+statsmodels>=0.14.0
+streamlit>=1.32.0
