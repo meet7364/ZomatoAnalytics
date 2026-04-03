@@ -1,8 +1,25 @@
-# 🍽️ ZomatoBangalore — Restaurant Analytics
+# Zomato Bangalore Analytics Dashboard
 
-A full-stack data analytics project analyzing **51,717+ restaurants** across Bangalore using the Zomato dataset. Covers data ingestion, cleaning, transformation via dbt, and interactive visualization via Tableau.
+A full-stack data analytics project analyzing **51,696 restaurants** across **93 locations** in Bangalore using the Zomato dataset. Covers end-to-end data engineering — ingestion, cleaning, transformation via dbt, EDA with Pandas, and an interactive Streamlit dashboard.
 
-> 📊 **Dashboard:** [Coming Soon](#) — Preview available at [`dashboards/dashboard_preview.png`](dashboards/dashboard_preview.png)
+> 🔗 **Live Dashboard:** [zomato-analytics-dashboard-meet7364.streamlit.app](https://zomato-analytics-dashboard-meet7364.streamlit.app/)
+
+---
+
+## 📊 Dashboard Features
+
+The interactive dashboard is built with **Streamlit + Plotly** and includes:
+
+| Section | What it shows |
+|---|---|
+| **KPI Row** | Total restaurants, locations, avg rating, median cost, total votes |
+| **Location Insights** | Top N locations by count & avg rating (interactive, adjustable slider) |
+| **Ratings & Cost Distribution** | Histograms for rating spread and cost distribution (up to ₹3,000) |
+| **Order & Booking Behaviour** | Online vs offline avg rating by restaurant type; table booking impact |
+| **Cuisines & Restaurant Types** | Top cuisines by avg rating; restaurant type breakdown (donut/bar toggle) |
+| **Deep Dives** | Cost vs rating scatter + OLS trendline; votes vs rating scatter |
+
+**Cross-filtering:** Click any bar or pie slice to filter all charts simultaneously. Use the sidebar to filter by location, restaurant type, online order, cost range, and minimum rating.
 
 ---
 
@@ -14,7 +31,9 @@ ZomatoBangalore/
 │   └── dashboard_preview.png       # Static dashboard preview
 ├── data/
 │   ├── processed/
+│   │   └── zomato_clean.csv        # Cleaned dataset (output of clean.py)
 │   └── raw/
+│       └── zomato.csv              # Raw Kaggle dataset
 ├── notebooks/
 │   └── eda.ipynb                   # Exploratory data analysis
 ├── plots/                          # All generated visualizations
@@ -44,10 +63,11 @@ ZomatoBangalore/
 │           ├── schema.yml
 │           ├── sources.yml
 │           └── stg_zomato.sql
+├── streamlit_app.py                # Interactive analytics dashboard
 ├── Makefile
 ├── pyproject.toml
-├── README.md
-└── requirements.txt
+├── requirements.txt
+└── README.md
 ```
 
 ---
@@ -57,40 +77,20 @@ ZomatoBangalore/
 | Layer | Tool |
 |---|---|
 | Data Source | Kaggle — Zomato Bangalore Dataset |
-| Data Cleaning | Python (Pandas) |
+| Data Cleaning | Python · Pandas |
 | Transformation | dbt (Data Build Tool) |
 | Exploration | Jupyter Notebook |
-| Visualization | Tableau Desktop |
+| Dashboard | Streamlit · Plotly |
 | Package Management | uv / pyproject.toml |
 
 ---
 
-## 📊 Dashboard
-
-> 🔗 **Live Dashboard:** Coming Soon
->
-> In the meantime, view the static preview:
-
-![Dashboard Preview](dashboards/dashboard_preview.png)
-
-### Sheets included in the dashboard:
-
-| Sheet | Chart Type | Description |
-|---|---|---|
-| Top 15 Locations | Horizontal Bar | Restaurant count by area, coloured by avg rating |
-| Rating Distribution | Histogram | Distribution of ratings in 0.5 buckets |
-| Online Order vs Rating | Side-by-side Bar | Online vs offline avg rating split by restaurant type |
-| Cost vs Rating | Scatter Plot | Approx cost vs rating with trend line, coloured by location |
-| Top Cuisines by Avg Rating | Horizontal Bar | Cuisines with 100+ restaurants, ranked by avg rating |
-
----
-
-## 🚀 Getting Started
+## 🚀 Getting Started (Run Locally)
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/meet7364/ZomatoBangalore.git
+git clone https://github.com/meet7364/ZomatoAnalytics.git
 cd ZomatoBangalore
 ```
 
@@ -100,7 +100,15 @@ cd ZomatoBangalore
 uv sync
 ```
 
-### 3. Run data cleaning
+### 3. Add the raw dataset
+
+Download [`zomato.csv`](https://www.kaggle.com/datasets/himanshupoddar/zomato-bangalore-restaurants) from Kaggle and place it at:
+
+```
+data/raw/zomato.csv
+```
+
+### 4. Run data cleaning
 
 ```bash
 uv run python src/clean.py
@@ -108,15 +116,19 @@ uv run python src/clean.py
 
 This reads `data/raw/zomato.csv`, cleans it, and outputs `data/processed/zomato_clean.csv`.
 
-### 4. Run dbt transformations
+### 5. (Optional) Run dbt transformations
 
 ```bash
 make dbt-all
 ```
 
-### 5. Explore the data
+### 6. Launch the dashboard
 
-Open and run `notebooks/eda.ipynb` to explore distributions, top locations, cuisine ratings, and more.
+```bash
+streamlit run streamlit_app.py
+```
+
+Open [http://localhost:8501](http://localhost:8501) in your browser.
 
 ---
 
@@ -128,7 +140,7 @@ The raw Zomato dataset required significant cleaning before analysis:
 - Removed commas from cost values like `"1,200"` → `1200`
 - Dropped rows with `"NEW"` or `"-"` as rating values
 - Handled null values in `approx_cost`, `cuisines`, and `location`
-- Standardised `online_order` and `book_table` to boolean values
+- Standardised `online_order` and `book_table` to `Yes` / `No` values
 
 ---
 
@@ -152,27 +164,32 @@ The raw Zomato dataset required significant cleaning before analysis:
 
 ## 📈 Key Insights
 
-- **BTM Layout** has the highest restaurant count (3,930+) in Bangalore
-- Restaurants that accept **online orders** have a slightly higher avg rating (3.72) vs offline (3.66)
-- **Cafe, Desserts** cuisine combination has the highest avg rating (4.10) among popular cuisines
-- Most restaurants are rated between **3.5 and 4.0**
-- Higher cost restaurants tend to have marginally better ratings (positive trend line)
+- **BTM** has the highest restaurant count (~5,000+) across all 93 Bangalore locations
+- **Lavelle Road** tops the avg rating chart among areas with 30+ restaurants (~4.1)
+- Restaurants that accept **online orders** have a slightly higher avg rating vs offline
+- **Table booking** restaurants average significantly higher ratings (**4.14 vs 3.62**)
+- **Cafe, Desserts** cuisine combination has the highest avg rating among popular cuisines
+- Most restaurants cluster between ratings **3.5 – 4.0**, with median cost around **₹400**
+- Higher cost restaurants show a positive OLS trendline with rating (cost vs rating scatter)
+- **Quick Bites** (43.5%) and **Casual Dining** (23.5%) dominate restaurant types
 
 ---
 
 ## 📦 Dataset
 
 - **Source:** [Zomato Bangalore Restaurants — Kaggle](https://www.kaggle.com/datasets/himanshupoddar/zomato-bangalore-restaurants)
-- **Size:** ~51,000+ restaurant records
-- **Fields:** name, location, cuisines, approx_cost, rate, votes, online_order, book_table, rest_type, listed_type
+- **Size:** 51,696 restaurant records · 93 locations
+- **Fields:** `name`, `location`, `cuisines`, `approx_cost`, `rate`, `votes`, `online_order`, `book_table`, `rest_type`, `listed_type`
 
 ---
 
 ## 🙌 Acknowledgements
 
 - Dataset by Kaggle community contributors
-- dbt for making SQL transformations modular and testable
-- Tableau for interactive dashboard visualisation
+- [dbt](https://www.getdbt.com/) for making SQL transformations modular and testable
+- [Streamlit](https://streamlit.io/) & [Plotly](https://plotly.com/) for the interactive dashboard
+
+---
 
 ## Author
 
