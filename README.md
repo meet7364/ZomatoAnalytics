@@ -164,14 +164,16 @@ The raw Zomato dataset required significant cleaning before analysis:
 
 ## 📈 Key Insights
 
+*(Rerun 2026-08-15: `src/clean.py` regenerated `data/processed/zomato_clean.csv` byte-identical to the committed version — 51,696 rows, 93 locations. `notebooks/eda.ipynb` executed end-to-end; two numbers below were corrected against the real output.)*
+
 - **BTM** has the highest restaurant count (~5,000+) across all 93 Bangalore locations
 - **Lavelle Road** tops the avg rating chart among areas with 30+ restaurants (~4.1)
 - Restaurants that accept **online orders** have a slightly higher avg rating vs offline
 - **Table booking** restaurants average significantly higher ratings (**4.14 vs 3.62**)
-- **Cafe, Desserts** cuisine combination has the highest avg rating among popular cuisines
+- **Modern Indian** has the highest avg rating (4.31) among cuisines with 50+ listings
 - Most restaurants cluster between ratings **3.5 – 4.0**, with median cost around **₹400**
 - Higher cost restaurants show a positive OLS trendline with rating (cost vs rating scatter)
-- **Quick Bites** (43.5%) and **Casual Dining** (23.5%) dominate restaurant types
+- **Quick Bites** (37.2%) and **Casual Dining** (20.1%) dominate restaurant types
 
 ---
 
